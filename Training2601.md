@@ -246,3 +246,117 @@ shutil.copy(best_path, new_path)
 print(f"Model juga disalin ke: {new_path}")
 ```
 
+---
+# BAGI BAGI 
+```
+nano ~/Training2601/split_labeled.py
+```
+pisah
+```
+import shutil
+from pathlib import Path
+
+SRC = Path.home() / "Training2601/raw_images"
+DONE = Path.home() / "Training2601/sudah_label"
+BELUM = Path.home() / "Training2601/belum_label"
+DONE.mkdir(exist_ok=True)
+BELUM.mkdir(exist_ok=True)
+
+imgs = sorted(SRC.glob("*.jpg"))
+done_count = belum_count = 0
+
+for img in imgs:
+    label = img.with_suffix(".txt")
+    if label.exists():
+        shutil.copy(img, DONE / img.name)
+        shutil.copy(label, DONE / label.name)
+        done_count += 1
+    else:
+        shutil.copy(img, BELUM / img.name)
+        belum_count += 1
+
+print(f"Sudah dilabel: {done_count}")
+print(f"Belum dilabel: {belum_count}")
+```
+
+
+terus 
+```
+python3 ~/Training2601/split_labeled.py
+```
+
+bagi foto
+```
+import shutil
+from pathlib import Path
+
+SRC = Path.home() / "Training2601/belum_label"
+PC  = Path.home() / "Training2601/belum_label_PC"
+LAPTOP = Path.home() / "Training2601/belum_label_LAPTOP"
+PC.mkdir(exist_ok=True)
+LAPTOP.mkdir(exist_ok=True)
+
+imgs = sorted(SRC.glob("*.jpg"))
+half = len(imgs) // 2
+
+for img in imgs[:half]:
+    shutil.copy(img, PC / img.name)
+for img in imgs[half:]:
+    shutil.copy(img, LAPTOP / img.name)
+
+print(f"PC lanjut: {half} foto")
+print(f"Laptop kerjain: {len(imgs)-half} foto")
+```
+# Pindahin CLASS
+```
+cp ~/Training2601/raw_images/classes.txt ~/Training2601/belum_label_PC/
+cp ~/Training2601/raw_images/classes.txt ~/Training2601/belum_label_LAPTOP/
+```
+
+<br>
+
+# Gabung semua hasil (sudah_label + PC + laptop) jadi satu folder final
+pertama
+```
+nano ~/Training2601/merge_final.py
+```
+kedua
+```
+import shutil
+from pathlib import Path
+
+FOLDERS = [
+    Path.home() / "Training2601/sudah_label",
+    Path.home() / "Training2601/belum_label_PC",
+    Path.home() / "Training2601/belum_label_LAPTOP",
+]
+
+FINAL = Path.home() / "Training2601/raw_images_final"
+FINAL.mkdir(exist_ok=True)
+
+count = 0
+for folder in FOLDERS:
+    for f in folder.glob("*.jpg"):
+        shutil.copy(f, FINAL / f.name)
+        label = f.with_suffix(".txt")
+        if label.exists():
+            shutil.copy(label, FINAL / label.name)
+        count += 1
+
+print(f"Total foto digabung: {count}")
+```
+
+run
+```
+python3 ~/Training2601/merge_final.py
+```
+
+cek 
+```
+ls ~/Training2601/raw_images_final/*.jpg | wc -l
+ls ~/Training2601/raw_images_final/*.txt | wc -l
+```
+
+
+
+
