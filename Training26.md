@@ -174,6 +174,13 @@ print(f"{results.save_dir}/weights/best.pt")
 python3 ~/Training26/train.py
 
 
+# cek auto safe 
+```
+ls -ld ~/Training2601/raw_images
+```
+
+
+
 
 
 
